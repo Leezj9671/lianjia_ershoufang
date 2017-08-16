@@ -30,16 +30,16 @@ def run():
     city_dict = get_city_dict()
 
     for city_name in city_dict.keys():
-        print(city_name, end=" ")
+        print(city_name[0:2], end=" ")
     print()
 
     # input_city_name = input("input city:")
-    input_city_name = '中山'
+    input_city_name = '中山' + '二手房'
     city_url = city_dict.get(input_city_name)
     if not city_url: 
         print("city input error")
         sys.exit()
-    ershoufang_city_url = city_url + "ershoufang"
+    ershoufang_city_url = city_url
     district_dict = get_district_dict(ershoufang_city_url)
 
     for district in district_dict.keys():
@@ -54,8 +54,8 @@ def run():
         print("district input error")
         sys.exit()
 
-    house_info_url = city_url + district_url[1:]
-    print(house_info_url)
+    house_info_url = city_url + district_url[12:]
+    # print(house_info_url)
     house(house_info_url)
 
 if __name__ == "__main__":

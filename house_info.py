@@ -24,14 +24,14 @@ def get_house_info_list(url):
     house_list = bsobj.find_all('li', {'class': 'clear'})
 
     for house in house_list:
-        title = house.find('div', {'class': 'title'}).get_text().encode('utf-8')
+        title = house.find('div', {'class': 'title'}).get_text()
         info = house.find('div', {'class': 'houseInfo'}).get_text().split('|')
-        block = info[0].strip().encode('utf-8')
-        house_type = info[1].strip().encode('utf-8')
+        block = info[0].strip()
+        house_type = info[1].strip()
         size_info = info[2].strip()
         size = re.findall('\d+', size_info)[0]
         price_info = house.find('div', {'class': 'totalPrice'}).span.get_text()
-        price = re.findall('\d', price_info)[0]
+        price = re.findall('\d+', price_info)[0]
         house_info_list.append({
             'title': title,
             'price': int(price),
@@ -39,18 +39,18 @@ def get_house_info_list(url):
             'block': block,
             'house_type': house_type
             })
-        return house_info_list
+    return house_info_list
 
 def house(url):
     house_info_list = []
-    pagerange = 3
+    pagerange = 1
 
     for i in range(pagerange):
         new_url = url + 'pg' + str(i+1)
         house_info_list.extend(get_house_info_list(new_url))
 
     if house_info_list:
-        with open('./house.csv', 'wb+') as f:
+        with open('./house.csv', 'w') as f:
             writer = csv.writer(f, delimiter='|')
             for house_info in house_info_list:
                 title = house_info.get('title')
@@ -58,6 +58,5 @@ def house(url):
                 size = house_info.get('size')
                 block = house_info.get('block')
                 house_type = house_info.get('house_type')
-                print(house_info)
                 writer.writerow([title, int(price), int(size), block, house_type])
                 print(block, price, size)
